@@ -1,0 +1,37 @@
+package com.twitter.twitterapi.exceptions;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.time.LocalDateTime;
+
+@Slf4j
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionResponse> handleException(UserException userException){
+        log.error("UserException occured" + userException.getMessage());
+        return new ResponseEntity<>(new ExceptionResponse
+                (userException.getMessage(),
+                        userException.getHttpStatus().value(),
+                        LocalDateTime.now()),
+                userException.getHttpStatus());
+
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ExceptionResponse> handleGeneralException(Exception exception){
+        log.error("General Exception occured" + exception.getMessage());
+        return new ResponseEntity<>(new ExceptionResponse
+                (exception.getMessage(),
+                        HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                        LocalDateTime.now()),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
+
+}
