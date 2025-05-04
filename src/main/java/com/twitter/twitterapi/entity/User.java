@@ -32,6 +32,12 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "user_name",unique = true,nullable = false)
+    private String userName;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Tweet> tweets;
