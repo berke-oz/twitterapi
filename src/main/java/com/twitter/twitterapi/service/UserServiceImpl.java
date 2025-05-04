@@ -5,10 +5,10 @@ import com.twitter.twitterapi.exceptions.UserException;
 import com.twitter.twitterapi.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 @AllArgsConstructor
@@ -16,10 +16,7 @@ public class UserServiceImpl implements UserService{
 
 
     private final UserRepository userRepository;
-    @Override
-    public User createUser(User user) {
-        return userRepository.save(user);
-    }
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User getUserById(Long id) {
@@ -47,4 +44,6 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteById(id);
 
     }
+
+
 }
