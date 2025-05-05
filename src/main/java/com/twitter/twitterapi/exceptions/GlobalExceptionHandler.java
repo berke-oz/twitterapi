@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<ExceptionResponse> handleException(UserException userException){
-        log.error("UserException occured" + userException.getMessage());
+    public ResponseEntity<ExceptionResponse> handleException(ApiException apiException){
+        log.error("ApiException occured" + apiException.getMessage());
         return new ResponseEntity<>(new ExceptionResponse
-                (userException.getMessage(),
-                        userException.getHttpStatus().value(),
+                (apiException.getMessage(),
+                        apiException.getHttpStatus().value(),
                         LocalDateTime.now()),
-                userException.getHttpStatus());
+                apiException.getHttpStatus());
 
     }
 
