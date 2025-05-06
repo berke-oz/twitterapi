@@ -5,5 +5,5 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-public record CommentResponse (Long id, String content, String userName, Long tweetId, LocalDateTime createdAt){
+public record CommentResponse (Long id, String content, String userName, LocalDateTime createdAt){
 }
