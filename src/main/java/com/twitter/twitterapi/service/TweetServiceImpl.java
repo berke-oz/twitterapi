@@ -9,6 +9,7 @@ import com.twitter.twitterapi.exceptions.UnauthorizedTweetDeleteException;
 import com.twitter.twitterapi.exceptions.UnauthorizedTweetUpdateException;
 import com.twitter.twitterapi.repository.TweetRepository;
 import com.twitter.twitterapi.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -58,19 +59,20 @@ public class TweetServiceImpl implements TweetService{
     }
 
     @Override
-    public TweetResponse updateTweet(Long id, TweetRequest tweetRequest, String userEmail) {
-        Tweet tweet = tweetRepository.findById(id)
-                .orElseThrow(() -> new TweetNotFoundException(id));
-        if(!tweet.getUser().getEmail().equals(userEmail)){
-            throw new UnauthorizedTweetUpdateException();
+        public TweetResponse updateTweet(Long id, TweetRequest tweetRequest, String userEmail) {
+            Tweet tweet = tweetRepository.findById(id)
+                    .orElseThrow(() -> new TweetNotFoundException(id));
+            if(!tweet.getUser().getEmail().equals(userEmail)){
+                throw new UnauthorizedTweetUpdateException();
+            }
+
+            tweet.setContent(tweetRequest.getContent());
+            Tweet uptadedTweet = tweetRepository.save(tweet);
+
+            return new TweetResponse(uptadedTweet.getId(), uptadedTweet.getContent(), uptadedTweet.getCreatedAt(), uptadedTweet.getUser().getUserName());
         }
 
-        tweet.setContent(tweetRequest.getContent());
-        Tweet uptadedTweet = tweetRepository.save(tweet);
-
-        return new TweetResponse(uptadedTweet.getId(), uptadedTweet.getContent(), uptadedTweet.getCreatedAt(), uptadedTweet.getUser().getUserName());
-    }
-
+    @Transactional
     @Override
     public void deleteTweet(Long id, String userEmail) {
         Tweet tweet = tweetRepository.findById(id)
