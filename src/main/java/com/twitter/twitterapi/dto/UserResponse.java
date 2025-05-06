@@ -4,5 +4,5 @@ import com.twitter.twitterapi.entity.Tweet;
 
 import java.util.List;
 
-public record UserResponse(Long id, String firstName, String lastName, String email, List<Tweet> tweets) {
+public record UserResponse(Long id, String firstName, String lastName, String email, List<TweetResponse> tweets) {
 }
