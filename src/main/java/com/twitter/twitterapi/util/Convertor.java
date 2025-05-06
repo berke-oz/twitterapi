@@ -1,6 +1,7 @@
 package com.twitter.twitterapi.util;
 
 
+import com.twitter.twitterapi.dto.CommentResponse;
 import com.twitter.twitterapi.dto.TweetResponse;
 import com.twitter.twitterapi.dto.UserRequest;
 import com.twitter.twitterapi.dto.UserResponse;
@@ -20,7 +21,15 @@ public class Convertor {
                        tweet.getId(),
                        tweet.getContent(),
                        tweet.getCreatedAt(),
-                       tweet.getUser().getUserName()
+                       tweet.getUser().getUserName(),
+                       tweet.getComments().stream()
+                               .map(comment -> new CommentResponse(
+                                       comment.getId(),
+                                       comment.getContent(),
+                                       comment.getUser().getUserName(),
+                                       comment.getCreatedAt()
+                               )).collect(Collectors.toList())
+
                ))
                .collect(Collectors.toList());
 

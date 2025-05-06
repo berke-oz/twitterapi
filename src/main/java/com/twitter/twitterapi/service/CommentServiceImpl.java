@@ -41,6 +41,6 @@ public class CommentServiceImpl implements CommentService{
 
         Comment savedComment = commentRepository.save(comment);
 
-        return new CommentResponse(savedComment.getId(), savedComment.getContent(), user.getUserName(),tweet.getId(),savedComment.getCreatedAt());
+        return new CommentResponse(savedComment.getId(), savedComment.getContent(), user.getUserName(),savedComment.getCreatedAt());
     }
 }
