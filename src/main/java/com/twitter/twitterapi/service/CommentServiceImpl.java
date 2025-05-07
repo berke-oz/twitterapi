@@ -5,8 +5,7 @@ import com.twitter.twitterapi.dto.CommentResponse;
 import com.twitter.twitterapi.entity.Comment;
 import com.twitter.twitterapi.entity.Tweet;
 import com.twitter.twitterapi.entity.User;
-import com.twitter.twitterapi.exceptions.ApiException;
-import com.twitter.twitterapi.exceptions.TweetNotFoundException;
+import com.twitter.twitterapi.exceptions.*;
 import com.twitter.twitterapi.repository.CommentRepository;
 import com.twitter.twitterapi.repository.TweetRepository;
 import com.twitter.twitterapi.repository.UserRepository;
@@ -43,4 +42,26 @@ public class CommentServiceImpl implements CommentService{
 
         return new CommentResponse(savedComment.getId(), savedComment.getContent(), user.getUserName(),savedComment.getCreatedAt());
     }
+
+    @Override
+    public CommentResponse updateComment(Long id, CommentRequest request, String userEmail) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new CommentNotFoundException(id));
+
+        if(!comment.getUser().getEmail().equals(userEmail)){
+            throw new UnauthorizedCommentUpdateException();
+        }
+
+        comment.setContent(request.getContent());
+        Comment updatedComment = commentRepository.save(comment);
+
+        return new CommentResponse(
+                updatedComment.getId(),
+                updatedComment.getContent(),
+                updatedComment.getUser().getUserName(),
+                updatedComment.getCreatedAt()
+        );
+    }
+
+
 }

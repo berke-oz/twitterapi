@@ -7,10 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/comment")
@@ -26,6 +23,13 @@ public class CommentController {
         String userEmail = authentication.getName();
         CommentResponse comment = commentService.createComment(request, userEmail);
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CommentResponse> updateTweet(@PathVariable Long id, @RequestBody CommentRequest request, Authentication authentication ){
+        String userEmail = authentication.getName();
+        CommentResponse comment = commentService.updateComment(id,request,userEmail);
+        return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
 }
