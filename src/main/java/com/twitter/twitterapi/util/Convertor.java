@@ -1,10 +1,7 @@
 package com.twitter.twitterapi.util;
 
 
-import com.twitter.twitterapi.dto.CommentResponse;
-import com.twitter.twitterapi.dto.TweetResponse;
-import com.twitter.twitterapi.dto.UserRequest;
-import com.twitter.twitterapi.dto.UserResponse;
+import com.twitter.twitterapi.dto.*;
 import com.twitter.twitterapi.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +25,14 @@ public class Convertor {
                                        comment.getContent(),
                                        comment.getUser().getUserName(),
                                        comment.getCreatedAt()
-                               )).collect(Collectors.toList())
+                               )).collect(Collectors.toList()),
+                       tweet.getLikes().stream()
+                               .map(like -> new LikeResponse(
+                                       like.getUser().getUserName()
+                               ))
+                               .collect(Collectors.toList())
+
+
 
                ))
                .collect(Collectors.toList());
