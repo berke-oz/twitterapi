@@ -1,6 +1,7 @@
 package com.twitter.twitterapi.service;
 
 import com.twitter.twitterapi.dto.CommentResponse;
+import com.twitter.twitterapi.dto.LikeResponse;
 import com.twitter.twitterapi.dto.TweetRequest;
 import com.twitter.twitterapi.dto.TweetResponse;
 import com.twitter.twitterapi.entity.Tweet;
@@ -41,6 +42,7 @@ public class TweetServiceImpl implements TweetService{
                 savedTweet.getContent(),
                 savedTweet.getCreatedAt(),
                 user.getUserName(),
+                List.of(),
                 List.of()
 
         );
@@ -53,7 +55,18 @@ public class TweetServiceImpl implements TweetService{
         List<Tweet> tweets = tweetRepository.findTweetByUserId(userId);
 
         return tweets.stream()
-                .map(tweet -> new TweetResponse(tweet.getId(), tweet.getContent(), tweet.getCreatedAt(), tweet.getUser().getUserName(),List.of()))
+                .map(tweet -> new TweetResponse(
+                        tweet.getId(),
+                        tweet.getContent(),
+                        tweet.getCreatedAt(),
+                        tweet.getUser().getUserName(),
+                        List.of(),
+                        tweet.getLikes().stream()
+                                .map(like -> new LikeResponse(
+                                        like.getUser().getUserName()
+                                ))
+                                .collect(Collectors.toList())
+                ))
                 .collect(Collectors.toList());
 
     }
@@ -71,12 +84,18 @@ public class TweetServiceImpl implements TweetService{
                         comment.getCreatedAt()
                 ))
                 .collect(Collectors.toList());
+        List<LikeResponse> likeResponses = tweet.getLikes().stream()
+                .map(like -> new LikeResponse(
+                        like.getUser().getUserName()
+                ))
+                .collect(Collectors.toList());
         return new TweetResponse(
                 tweet.getId(),
                 tweet.getContent(),
                 tweet.getCreatedAt(),
                 tweet.getUser().getUserName(),
-                commentResponses
+                commentResponses,
+                likeResponses
         );
     }
 
@@ -98,13 +117,19 @@ public class TweetServiceImpl implements TweetService{
                             comment.getUser().getUserName(),
                             comment.getCreatedAt()
                     )).collect(Collectors.toList());
+        List<LikeResponse> likeResponses = uptadedTweet.getLikes().stream()
+                .map(like -> new LikeResponse(
+                        like.getUser().getUserName()
+                )).collect(Collectors.toList());
 
             return new TweetResponse(
                     uptadedTweet.getId(),
                     uptadedTweet.getContent(),
                     uptadedTweet.getCreatedAt(),
                     uptadedTweet.getUser().getUserName(),
-                    commentResponses
+                    commentResponses,
+                    likeResponses
+
             );
         }
 
