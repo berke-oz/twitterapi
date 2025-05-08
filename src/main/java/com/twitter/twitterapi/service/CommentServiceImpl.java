@@ -9,11 +9,14 @@ import com.twitter.twitterapi.exceptions.*;
 import com.twitter.twitterapi.repository.CommentRepository;
 import com.twitter.twitterapi.repository.TweetRepository;
 import com.twitter.twitterapi.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
+
 
 @Service
 @AllArgsConstructor
@@ -22,6 +25,10 @@ public class CommentServiceImpl implements CommentService{
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final TweetRepository tweetRepository;
+
+    private static  final Logger log = LoggerFactory.getLogger(CommentServiceImpl.class);
+
+
 
 
     @Override
@@ -61,6 +68,29 @@ public class CommentServiceImpl implements CommentService{
                 updatedComment.getUser().getUserName(),
                 updatedComment.getCreatedAt()
         );
+    }
+    @Transactional
+    @Override
+    public void deleteComment(Long id, String userEmail) {
+        log.debug("Attempting to delete comment ID: {}, User: {}", id, userEmail);
+
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new CommentNotFoundException(id));
+
+        String commentOwnerEmail = comment.getUser().getEmail();
+        String tweetOwnerEmail = comment.getTweet().getUser().getEmail();
+
+
+
+        log.info("Comment owner: {}, Tweet owner: {}", commentOwnerEmail, tweetOwnerEmail);
+
+        if(!commentOwnerEmail.equals(userEmail) && !tweetOwnerEmail.equals(userEmail)){
+            throw new UnauthorizedCommentDeleteException();
+        }
+
+
+        commentRepository.hardDeleteById(id);
+        log.info("Comment ID: {} deleted successfully by User: {}", id, userEmail);
     }
 
 

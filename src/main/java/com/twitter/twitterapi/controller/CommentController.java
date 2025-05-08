@@ -32,4 +32,12 @@ public class CommentController {
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id, Authentication authentication){
+        String userEmail = authentication.getName();
+        commentService.deleteComment(id,userEmail);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+
 }
