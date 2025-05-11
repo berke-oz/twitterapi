@@ -7,6 +7,7 @@ import com.twitter.twitterapi.entity.User;
 import com.twitter.twitterapi.service.AuthService;
 import com.twitter.twitterapi.service.UserService;
 import com.twitter.twitterapi.util.Convertor;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,7 @@ public class AuthController {
     private final Convertor convertor;
 
     @PostMapping("/register")
-    public UserResponse registerUser(@RequestBody UserRequest userRequest){
+    public UserResponse registerUser(@Valid @RequestBody UserRequest userRequest){
         User user = convertor.toUser(userRequest); //
         User savedUser = authService.register(user);
         return convertor.userResponseConvert(savedUser);
