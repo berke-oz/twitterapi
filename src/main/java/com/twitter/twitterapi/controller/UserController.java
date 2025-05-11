@@ -25,8 +25,7 @@ public class UserController {
         return convertor.userResponseConvert(user);
     }
 
-    //log at
-    // patch ile değiştir
+
 
     @PutMapping("/{id}")
     public UserResponse updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest userRequest){
