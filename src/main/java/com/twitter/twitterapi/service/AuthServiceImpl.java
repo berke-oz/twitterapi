@@ -32,7 +32,15 @@
 
             @Override
             public User register(User user) {
+                if (userRepository.existsByUserName(user.getUserName())) {
+                    throw new ApiException("Username already exists", HttpStatus.BAD_REQUEST);
+                }
+
+                if (userRepository.existsByEmail(user.getEmail())) {
+                    throw new ApiException("Email already registered", HttpStatus.BAD_REQUEST);
+                }
                 user.setPassword(passwordEncoder.encode(user.getPassword()));
+
                 return userRepository.save(user);
             }
     }
