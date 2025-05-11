@@ -51,9 +51,9 @@ public class TweetController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTweet(@PathVariable Long id, Authentication authentication) {
 
-        String currentUserEmail = authentication.getName();
+        String userEmail = authentication.getName();
 
-        tweetService.deleteTweet(id, currentUserEmail);
+        tweetService.deleteTweet(id, userEmail);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
